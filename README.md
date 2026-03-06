@@ -1,74 +1,54 @@
-# Mini Policy Management System (TypeScript Full Stack)
+# Policy Management System Admin Dashboard
 
-Full stack project with React + TypeScript frontend and Node.js/Express + TypeScript backend using MongoDB.
+Full-stack admin dashboard built with React, Axios, Bootstrap 5, Node.js, Express, and MongoDB.
 
 ## Features
 
-- Policy CRUD management
-- Installment management (add, view history, mark paid)
-- Dashboard summary (total policies, collected amount, pending installments)
-- Search/filter for policies
-- Structured backend architecture with services/controllers/validators
-- Environment-based configuration
-
-## Tech Stack
-
-- **Frontend**: React, TypeScript, Vite, Axios, React Router
-- **Backend**: Node.js, Express, TypeScript, Mongoose, Zod
-- **Database**: MongoDB
+- Create, read, update, and delete insurance policies
+- Create installment payment plans for a policy
+- Mark individual installments as paid
+- Dashboard summary cards for policies and collected premium
 
 ## Project Structure
 
-- `backend/` - API server
-- `frontend/` - React client
+- `backend`: Express API with MongoDB models
+- `frontend`: React admin dashboard powered by Vite
 
 ## Setup
 
-### 1) Install dependencies
+1. Install dependencies:
 
 ```bash
 npm install
 ```
 
-### 2) Configure environment
-
-Backend:
+2. Copy environment files:
 
 ```bash
 cp backend/.env.example backend/.env
-```
-
-Frontend:
-
-```bash
 cp frontend/.env.example frontend/.env
 ```
 
-### 3) Run backend
+3. Update `backend/.env` with your MongoDB connection string.
+
+4. Start backend:
 
 ```bash
-npm run dev --workspace backend
+npm run dev:backend
 ```
 
-### 4) Run frontend
+5. Start frontend in a new terminal:
 
 ```bash
-npm run dev --workspace frontend
+npm run dev:frontend
 ```
 
 ## API Endpoints
 
-### Policy APIs
-- `POST /api/policies` - Create policy
-- `GET /api/policies` - List policies
-- `GET /api/policies/:id` - Get policy details
-- `PUT /api/policies/:id` - Update policy
-- `DELETE /api/policies/:id` - Delete policy
-
-### Installment APIs
-- `POST /api/policies/:id/installment` - Add installment
-- `PUT /api/installment/:installmentId/pay` - Mark installment as paid
-- `GET /api/policies/:id/installments` - List installments by policy
-
-### Dashboard APIs
-- `GET /api/dashboard/summary` - Dashboard summary
+- `GET /api/policies`
+- `POST /api/policies`
+- `PUT /api/policies/:id`
+- `DELETE /api/policies/:id`
+- `GET /api/installments`
+- `POST /api/installments`
+- `PATCH /api/installments/:id/pay/:installmentNumber`

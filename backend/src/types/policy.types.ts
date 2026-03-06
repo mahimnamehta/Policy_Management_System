@@ -1,22 +1,24 @@
-export type InstallmentStatus = 'PAID' | 'PENDING';
-
-export interface InstallmentInput {
-  dueDate: string;
-  amount: number;
-  status?: InstallmentStatus;
-  paidAt?: string | null;
-}
+export type PolicyStatus = 'Active' | 'Pending' | 'Expired' | 'Cancelled';
+export type InstallmentStatus = 'Pending' | 'Paid' | 'Overdue';
 
 export interface PolicyInput {
   policyNumber: string;
   customerName: string;
-  policyType: string;
+  email: string;
+  phone: string;
+  policyType: 'Health' | 'Life' | 'Vehicle' | 'Home' | 'Travel' | 'Business';
+  coverageAmount: number;
   premiumAmount: number;
   startDate: string;
   endDate: string;
-  installments?: InstallmentInput[];
+  status?: PolicyStatus;
+  notes?: string;
 }
 
-export interface PolicyFilter {
-  search?: string;
+export interface InstallmentInput {
+  policy: string;
+  totalAmount: number;
+  installmentCount: number;
+  firstDueDate: string;
+  paymentMethod?: 'Card' | 'Bank Transfer' | 'Cash' | 'UPI';
 }

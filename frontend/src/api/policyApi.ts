@@ -1,46 +1,22 @@
-import { apiClient } from './client';
-import { DashboardSummary, Installment, Policy, PolicyPayload } from '../types/policy';
+import axios, { type AxiosResponse } from 'axios';
+import type { InstallmentFormData, InstallmentPlan, Policy, PolicyFormData } from '../types/dashboard';
 
-export const fetchDashboardSummary = async (): Promise<DashboardSummary> => {
-  const { data } = await apiClient.get<DashboardSummary>('/dashboard/summary');
-  return data;
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
+});
+
+export const policyApi = {
+  getAll: (): Promise<AxiosResponse<Policy[]>> => api.get('/policies'),
+  create: (payload: PolicyFormData): Promise<AxiosResponse<Policy>> => api.post('/policies', payload),
+  update: (id: string, payload: PolicyFormData): Promise<AxiosResponse<Policy>> => api.put(`/policies/${id}`, payload),
+  remove: (id: string): Promise<AxiosResponse<{ message: string }>> => api.delete(`/policies/${id}`)
 };
 
-export const fetchPolicies = async (search = ''): Promise<Policy[]> => {
-  const { data } = await apiClient.get<Policy[]>('/policies', { params: { search } });
-  return data;
+export const installmentApi = {
+  getAll: (): Promise<AxiosResponse<InstallmentPlan[]>> => api.get('/installments'),
+  create: (payload: InstallmentFormData): Promise<AxiosResponse<InstallmentPlan>> => api.post('/installments', payload),
+  markPaid: (id: string, installmentNumber: number): Promise<AxiosResponse<InstallmentPlan>> =>
+    api.patch(`/installments/${id}/pay/${installmentNumber}`)
 };
 
-export const fetchPolicyById = async (id: string): Promise<Policy> => {
-  const { data } = await apiClient.get<Policy>(`/policies/${id}`);
-  return data;
-};
-
-export const createPolicy = async (payload: PolicyPayload): Promise<Policy> => {
-  const { data } = await apiClient.post<Policy>('/policies', payload);
-  return data;
-};
-
-export const updatePolicy = async (id: string, payload: Partial<PolicyPayload>): Promise<Policy> => {
-  const { data } = await apiClient.put<Policy>(`/policies/${id}`, payload);
-  return data;
-};
-
-export const deletePolicy = async (id: string): Promise<void> => {
-  await apiClient.delete(`/policies/${id}`);
-};
-
-export const fetchInstallments = async (policyId: string): Promise<Installment[]> => {
-  const { data } = await apiClient.get<Installment[]>(`/policies/${policyId}/installments`);
-  return data;
-};
-
-export const addInstallment = async (policyId: string, payload: Pick<Installment, 'dueDate' | 'amount'>): Promise<Policy> => {
-  const { data } = await apiClient.post<Policy>(`/policies/${policyId}/installment`, payload);
-  return data;
-};
-
-export const markInstallmentPaid = async (installmentId: string): Promise<Policy> => {
-  const { data } = await apiClient.put<Policy>(`/installment/${installmentId}/pay`);
-  return data;
-};
+export default api;

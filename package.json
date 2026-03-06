@@ -1,5 +1,5 @@
 {
-  "name": "policy-management-system",
+  "name": "policy-management-system-react",
   "private": true,
   "version": "1.0.0",
   "workspaces": [
@@ -7,9 +7,12 @@
     "frontend"
   ],
   "scripts": {
-    "install:all": "npm install --workspaces",
-    "dev": "npm run dev --workspace backend",
+    "dev:backend": "npm run dev --workspace backend",
     "dev:frontend": "npm run dev --workspace frontend",
-    "build": "npm run build --workspace backend && npm run build --workspace frontend"
+    "build": "npm run build --workspace frontend",
+    "start": "npm run start --workspace backend"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
   }
 }

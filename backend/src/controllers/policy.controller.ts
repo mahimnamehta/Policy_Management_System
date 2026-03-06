@@ -1,98 +1,47 @@
-import { Request, Response, NextFunction } from 'express';
-import { StatusCodes } from 'http-status-codes';
 import {
-  addInstallment,
+  createInstallmentPlan,
   createPolicy,
   deletePolicy,
-  getDashboardSummary,
-  getInstallmentsByPolicyId,
+  getInstallmentPlans,
   getPolicies,
-  getPolicyById,
   markInstallmentPaid,
   updatePolicy
 } from '../services/policy.service.js';
-import { addInstallmentSchema, createPolicySchema, updatePolicySchema } from '../validators/policy.validator.js';
+import {
+  validateCreateInstallmentPlan,
+  validateCreatePolicy,
+  validateMarkInstallmentPaid,
+  validateUpdatePolicy
+} from '../validators/policy.validator.js';
 
-export const createPolicyHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const payload = createPolicySchema.parse(req.body);
-    const policy = await createPolicy(payload);
-    res.status(StatusCodes.CREATED).json(policy);
-  } catch (error) {
-    next(error);
-  }
+export const getPoliciesHandler = async (_req: any, res: any, next: any): Promise<void> => {
+  try { res.status(200).json(await getPolicies()); } catch (error) { next(error); }
 };
 
-export const listPoliciesHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const policies = await getPolicies({ search: req.query.search?.toString() });
-    res.status(StatusCodes.OK).json(policies);
-  } catch (error) {
-    next(error);
-  }
+export const createPolicyHandler = async (req: any, res: any, next: any): Promise<void> => {
+  try { res.status(201).json(await createPolicy(validateCreatePolicy(req.body))); } catch (error) { next(error); }
 };
 
-export const getPolicyHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const policy = await getPolicyById(req.params.id);
-    res.status(StatusCodes.OK).json(policy);
-  } catch (error) {
-    next(error);
-  }
+export const updatePolicyHandler = async (req: any, res: any, next: any): Promise<void> => {
+  try { res.status(200).json(await updatePolicy(req.params.id, validateUpdatePolicy(req.body))); } catch (error) { next(error); }
 };
 
-export const updatePolicyHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const payload = updatePolicySchema.parse(req.body);
-    const policy = await updatePolicy(req.params.id, payload);
-    res.status(StatusCodes.OK).json(policy);
-  } catch (error) {
-    next(error);
-  }
+export const deletePolicyHandler = async (req: any, res: any, next: any): Promise<void> => {
+  try { await deletePolicy(req.params.id); res.status(200).json({ message: 'Policy deleted successfully' }); } catch (error) { next(error); }
 };
 
-export const deletePolicyHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    await deletePolicy(req.params.id);
-    res.status(StatusCodes.NO_CONTENT).send();
-  } catch (error) {
-    next(error);
-  }
+export const getInstallmentsHandler = async (_req: any, res: any, next: any): Promise<void> => {
+  try { res.status(200).json(await getInstallmentPlans()); } catch (error) { next(error); }
 };
 
-export const addInstallmentHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const payload = addInstallmentSchema.parse(req.body);
-    const policy = await addInstallment(req.params.id, payload);
-    res.status(StatusCodes.CREATED).json(policy);
-  } catch (error) {
-    next(error);
-  }
+export const createInstallmentHandler = async (req: any, res: any, next: any): Promise<void> => {
+  try { res.status(201).json(await createInstallmentPlan(validateCreateInstallmentPlan(req.body))); } catch (error) { next(error); }
 };
 
-export const markInstallmentPaidHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const markInstallmentPaidHandler = async (req: any, res: any, next: any): Promise<void> => {
   try {
-    const policy = await markInstallmentPaid(req.params.installmentId);
-    res.status(StatusCodes.OK).json(policy);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const getInstallmentsHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const installments = await getInstallmentsByPolicyId(req.params.id);
-    res.status(StatusCodes.OK).json(installments);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const dashboardSummaryHandler = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const summary = await getDashboardSummary();
-    res.status(StatusCodes.OK).json(summary);
-  } catch (error) {
-    next(error);
-  }
+    const params = validateMarkInstallmentPaid(req.params);
+    console.log(params,'params installments');
+    res.status(200).json(await markInstallmentPaid(params.id, params.installmentNumber));
+  } catch (error) { next(error); }
 };

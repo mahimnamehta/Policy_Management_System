@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { markInstallmentPaidHandler } from '../controllers/policy.controller.js';
+import { createInstallmentHandler, getInstallmentsHandler, markInstallmentPaidHandler } from '../controllers/policy.controller.js';
 
 export const installmentRouter = Router();
-
-installmentRouter.put('/:installmentId/pay', markInstallmentPaidHandler);
+installmentRouter.route('/').get(getInstallmentsHandler).post(createInstallmentHandler);
+installmentRouter.patch('/:id/pay/:installmentNumber', markInstallmentPaidHandler);
